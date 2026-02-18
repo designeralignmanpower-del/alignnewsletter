@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Align Newsletter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --text-main:#fff;
+  --text-muted:#9aa4c7;
+  --accent:#4da3ff;
+  --glow:rgba(77,163,255,.7);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Inter',sans-serif;
+  color:var(--text-main);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* 🇦🇪 UAE Animated Background */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(to bottom,rgba(6,11,31,.85),rgba(6,11,31,.95)),
+    url("https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1600&q=80") center/cover no-repeat;
+  z-index:-2;
+  animation:bgMove 25s ease-in-out infinite;
+}
+
+@keyframes bgMove{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:100px 20px 60px;
+}
+
+.logo{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(3rem,8vw,5rem);
+  font-weight:700;
+  background:linear-gradient(120deg,#fff,#4da3ff,#7fd1ff);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shine 4s linear infinite;
+}
+
+@keyframes shine{
+  to{background-position:200% center;}
+}
+
+.subtitle{
+  margin-top:14px;
+  font-size:.9rem;
+  letter-spacing:.3em;
+  color:var(--text-muted);
+  text-transform:uppercase;
+}
+
+/* CONTAINER */
+.container{
+  max-width:1400px;
+  margin:auto;
+  padding:40px 20px 120px;
+}
+
+/* CAROUSEL */
+.carousel-wrapper{position:relative;}
+
+.carousel{
+  display:flex;
+  gap:32px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  padding:60px 10px 30px;
+}
+
+/* Scrollbar */
+.carousel::-webkit-scrollbar{
+  height:8px;
+}
+.carousel::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.1);
+}
+.carousel::-webkit-scrollbar-thumb{
+  background:linear-gradient(90deg,#4da3ff,#7fd1ff);
+  border-radius:10px;
+}
+
+/* CARD */
+.newsletter-card{
+  min-width:320px;
+  height:470px;
+  scroll-snap-align:center;
+  border-radius:24px;
+  backdrop-filter:blur(22px);
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));
+  border:1px solid rgba(255,255,255,.2);
+  text-decoration:none;
+  color:#fff;
+  overflow:hidden;
+  box-shadow:0 30px 60px rgba(0,0,0,.6);
+  transition:.5s ease;
+  position:relative;
+  cursor:pointer;
+}
+
+.newsletter-card:hover{
+  transform:translateY(-10px) scale(1.04);
+}
+
+.newsletter-card.active{
+  transform:scale(1.07);
+  box-shadow:
+    0 40px 90px rgba(0,0,0,.8),
+    0 0 70px var(--glow);
+}
+
+/* 🔴 RECENT BLINKING BADGE */
+.recent-badge{
+  position:absolute;
+  top:15px;
+  left:15px;
+  background:#ff3b3b;
+  color:#fff;
+  font-size:.65rem;
+  padding:6px 12px;
+  border-radius:50px;
+  letter-spacing:.1em;
+  font-weight:600;
+  animation:blink 1.2s infinite;
+  z-index:5;
+}
+
+@keyframes blink{
+  0%,100%{opacity:1;}
+  50%{opacity:.3;}
+}
+
+/* IMAGE */
+.card-image {
+  height: 68%;
+  position: relative;
+  overflow: hidden; /* 🔑 hides side bars */
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* 🔑 removes blue bars */
+  object-position: top;    /* keeps logo visible */
+  transform: scale(1.08);  /* 🔥 subtle zoom */
+  transition: transform 0.6s ease;
+}
+
+.card-image::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(6,11,31,.95));
+  pointer-events:none;
+}
+
+/* CONTENT */
+.card-content{
+  height:32%;
+  padding:26px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.card-month{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.9rem;
+  font-weight:700;
+}
+
+.card-desc{
+  margin-top:8px;
+  font-size:.95rem;
+  color:var(--text-muted);
+}
+
+/* NAV BUTTONS */
+.nav-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.35);
+  background:rgba(20,40,90,.85);
+  backdrop-filter:blur(12px);
+  color:#fff;
+  font-size:1.4rem;
+  cursor:pointer;
+  transition:.3s;
+  z-index:100;
+}
+
+.nav-btn:hover{
+  background:#4da3ff;
+  color:#000;
+}
+
+.nav-prev{left:-20px;}
+.nav-next{right:-20px;}
+
+footer{
+  text-align:center;
+  padding:60px 20px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+footer p{
+  color:var(--text-muted);
+  letter-spacing:.2em;
+  font-size:.8rem;
+  text-transform:uppercase;
+}
+
+@media(max-width:768px){
+  .nav-btn{display:none;}
+}
+
+/* POP EFFECT WHEN HOVERING CAROUSEL */
+.carousel-wrapper:hover .newsletter-card{
+  transform: scale(1.03);
+  transition: 0.4s ease;
+}
+
+.carousel-wrapper:hover .newsletter-card:hover{
+  transform: scale(1.08) translateY(-12px);
+  box-shadow:
+    0 50px 120px rgba(0,0,0,.8),
+    0 0 80px rgba(77,163,255,.9);
+}
+.newsletter-card{
+  transition: transform .4s ease, box-shadow .4s ease;
+}
+
+.newsletter-card:hover{
+  transform: perspective(1000px) rotateY(5deg) scale(1.08);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1 class="logo">Align Newsletter</h1>
+  <p class="subtitle">Monthly Highlights & Company Updates</p>
+</header>
+
+<section class="container">
+<div class="carousel-wrapper">
+
+<button class="nav-btn nav-prev" onclick="scrollCarousel(-1)">←</button>
+<button class="nav-btn nav-next" onclick="scrollCarousel(1)">→</button>
+
+<div class="carousel" id="carousel">
+
+<!-- FEBRUARY (RECENT EDITION) -->
+<a href="https://heyzine.com/flip-book/e3b6430ed2.html"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="newsletter-card">
+
+  <div class="recent-badge">RECENT EDITION</div>
+
+  <div class="card-image">
+    <img src="https://cdnc.heyzine.com/flip-book/cover/e3b6430ed2.jpg"
+         alt="February Newsletter">
+  </div>
+
+  <div class="card-content">
+    <h3 class="card-month">FEBRUARY</h3>
+    <p class="card-desc">Growth & Achievements</p>
+  </div>
+
+</a>
+
+<!-- JANUARY -->
+<a href="https://heyzine.com/flip-book/5c0fdd9351.html"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="newsletter-card">
+
+  <div class="card-image">
+    <img src="https://cdnc.heyzine.com/flip-book/cover/5c0fdd9351.jpg"
+         alt="January Newsletter">
+  </div>
+
+  <div class="card-content">
+    <h3 class="card-month">JANUARY</h3>
+    <p class="card-desc">Operational Insights</p>
+  </div>
+
+</a>
+
+<!-- DECEMBER -->
+<a href="https://heyzine.com/flip-book/b7bc0e7346.html"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="newsletter-card">
+
+  <div class="card-image">
+    <img src="https://cdnc.heyzine.com/flip-book/cover/b7bc0e7346.jpg"
+         alt="December Newsletter">
+  </div>
+
+  <div class="card-content">
+    <h3 class="card-month">DECEMBER</h3>
+    <p class="card-desc">Operational Insights</p>
+  </div>
+
+</a>
+
+<!-- NOVEMBER -->
+<a href="https://heyzine.com/flip-book/f339c0c131.html"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="newsletter-card">
+
+  <div class="card-image">
+    <img src="https://cdnc.heyzine.com/flip-book/cover/f339c0c131.jpg"
+         alt="November Newsletter">
+  </div>
+
+  <div class="card-content">
+    <h3 class="card-month">NOVEMBER</h3>
+    <p class="card-desc">Operational Insights</p>
+  </div>
+
+</a>
+
+
+</div>
+</div>
+</section>
+
+<footer>
+<p>© 2026 Align Staffing</p>
+</footer>
+
+<script>
+const carousel=document.getElementById('carousel');
+const cards=document.querySelectorAll('.newsletter-card');
+const cardWidth=360;
+
+function scrollCarousel(dir){
+  carousel.scrollBy({left:dir*cardWidth,behavior:'smooth'});
+}
+
+function updateActive(){
+  const center=carousel.scrollLeft+carousel.offsetWidth/2;
+  cards.forEach(card=>{
+    const cardCenter=card.offsetLeft+card.offsetWidth/2;
+    card.classList.toggle('active',
+      Math.abs(center-cardCenter)<card.offsetWidth/2
+    );
+  });
+}
+carousel.addEventListener('scroll',updateActive);
+updateActive();
+</script>
+
+</body>
+</html>
