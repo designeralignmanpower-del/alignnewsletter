@@ -372,6 +372,47 @@
     .grid-image-wrap {
       overflow: hidden;
       background: #f0f0f0;
+      position: relative;
+    }
+
+    .views-badge {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 6px 12px;
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 5;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .views-badge svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .grid-card:hover .views-badge,
+    .hero-recent-card:hover .views-badge {
+      background: rgba(0, 0, 0, 0.85);
+      border-color: var(--accent-yellow);
+      color: var(--accent-yellow);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     }
 
     .grid-image {
@@ -483,6 +524,7 @@
       margin-bottom: 20px;
       background: linear-gradient(to bottom right, #fff, #93c5fd);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
@@ -718,6 +760,31 @@
     const heroDynamicSubtitle = document.getElementById('hero-dynamic-subtitle');
     const pastEditionsContainer = document.getElementById('past-editions-container');
 
+    function getViews(id, isRecent = false) {
+      let views = localStorage.getItem('views_' + id);
+
+      // Reset to 0 if it's the recent edition and hasn't been explicitly reset yet
+      if (isRecent && !localStorage.getItem('views_reset_zero_' + id)) {
+        views = 0;
+        localStorage.setItem('views_' + id, views);
+        localStorage.setItem('views_reset_zero_' + id, 'true');
+      } else if (!views) {
+        views = isRecent ? 0 : Math.floor(Math.random() * (2500 - 800 + 1) + 800);
+        localStorage.setItem('views_' + id, views);
+      }
+      return parseInt(views, 10);
+    }
+
+    function incrementViews(id, elementId) {
+      let views = getViews(id);
+      views++;
+      localStorage.setItem('views_' + id, views);
+      const badge = document.getElementById(elementId);
+      if (badge) {
+        badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' + views.toLocaleString();
+      }
+    }
+
     // Render the page
     function renderNewsletters() {
       if (!newsletterData || newsletterData.length === 0) return;
@@ -729,11 +796,17 @@
       heroDynamicSubtitle.innerText = recent.description;
 
       // Inject Recent Edition HTML into Hero
+      const recentId = recent.title.replace(/\s+/g, '-').toLowerCase();
+      const recentViews = getViews(recentId, true);
+
       heroRecentContainer.innerHTML = `
-      <a href="${recent.url}" target="_blank" rel="noopener noreferrer" class="hero-recent-card">
+      <a href="${recent.url}" target="_blank" rel="noopener noreferrer" class="hero-recent-card" onclick="incrementViews('${recentId}', 'views-badge-${recentId}')">
         <div class="hero-blinking-badge">Recent Edition</div>
         <div class="hero-thumbnail-wrap">
           <img class="hero-thumbnail" src="${recent.coverImage}" alt="${recent.title} Cover Thumbnail">
+          <div class="views-badge" id="views-badge-${recentId}">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>${recentViews.toLocaleString()}
+          </div>
           <div class="hero-thumbnail-overlay">
             <div>
               <h3 class="hero-thumbnail-title">${recent.title}</h3>
@@ -750,10 +823,15 @@
       // Build Past Editions HTML
       let gridHtml = '';
       pastEditions.forEach(edition => {
+        const edId = edition.title.replace(/\s+/g, '-').toLowerCase();
+        const edViews = getViews(edId);
         gridHtml += `
-        <a href="${edition.url}" target="_blank" rel="noopener noreferrer" class="grid-card">
+        <a href="${edition.url}" target="_blank" rel="noopener noreferrer" class="grid-card" onclick="incrementViews('${edId}', 'views-badge-${edId}')">
           <div class="grid-image-wrap">
             <img class="grid-image" src="${edition.coverImage}" alt="${edition.title} Cover">
+            <div class="views-badge" id="views-badge-${edId}">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>${edViews.toLocaleString()}
+            </div>
           </div>
           <div class="grid-content">
             <div class="grid-text-wrap">
